@@ -4,3 +4,6 @@ gradio
 opencv-python
 numpy
 pyngrok
+scikit-learn
+matplotlib
+pillow
