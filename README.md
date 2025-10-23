@@ -19,12 +19,15 @@
 ```
 📦 cat-dog-classifier/
 │
-├─ app.py # Gradio 主應用程式
-├─ train.py # 模型訓練腳本
-├─ config.py # 模型參數與路徑設定
-├─ requirements.txt # 套件需求
-├─ best_model.pth # 訓練後模型 (請見下方下載說明)
-└─ README.md
+├─ app.py             # Gradio Web 介面
+├─ train.py           # 模型訓練（可帶參數）
+├─ config.py          # 各種設定集中管理
+├─ predict.py         # 終端機輸入圖片 → 輸出預測結果
+├─ requirements.txt   # 套件需求
+├─ best_model.pth     # 訓練好的模型 (請見下方下載說明)
+├─ README.md          # 說明文件
+└─ data               # 放訓練圖片
+
 ```
 
 ---

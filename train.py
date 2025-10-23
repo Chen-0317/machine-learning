@@ -1,4 +1,3 @@
-# train.py
 import os
 import glob
 import cv2
@@ -10,11 +9,22 @@ from sklearn.metrics import classification_report, accuracy_score
 from torch.utils.data import Dataset, DataLoader
 from torchvision import models, transforms
 from config import *  # ✅ 匯入集中設定
+import argparse
+
+# ============================================================
+# 命令列參數設定 (argparse)
+# ============================================================
+parser = argparse.ArgumentParser(description="Train Cat vs Dog Classifier")
+parser.add_argument("--epochs", type=int, default=EPOCHS, help="Number of training epochs")
+parser.add_argument("--lr", type=float, default=LEARNING_RATE, help="Learning rate")
+parser.add_argument("--batch_size", type=int, default=BATCH_SIZE, help="Batch size for training")
+parser.add_argument("--data", type=str, default=DATA_DIR, help="Path to training dataset")
+args = parser.parse_args()
 
 # ============================================================
 # 檢查裝置
 # ============================================================
-print(f"使用裝置：{DEVICE}")
+print(f"🖥 使用裝置：{DEVICE}")
 
 # ============================================================
 # 自訂 Dataset
@@ -62,14 +72,14 @@ test_transform = transforms.Compose([
 # ============================================================
 # Dataset & DataLoader
 # ============================================================
-full_dataset = CatsDogsDataset(TRAIN_DATA_PATH, transform=train_transform)
+full_dataset = CatsDogsDataset(args.data, transform=train_transform)
 train_size = int(0.8 * len(full_dataset))
 val_size = len(full_dataset) - train_size
 train_dataset, val_dataset = torch.utils.data.random_split(full_dataset, [train_size, val_size])
 val_dataset.dataset.transform = test_transform
 
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=2, pin_memory=True)
-val_loader   = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=2, pin_memory=True)
+train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=2, pin_memory=True)
+val_loader   = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True)
 
 # ============================================================
 # 模型設定 (ResNet34 Fine-tuning)
@@ -86,7 +96,7 @@ resnet34.fc = nn.Linear(num_ftrs, NUM_CLASSES)
 model = resnet34.to(DEVICE)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.AdamW(model.fc.parameters(), lr=LR)
+optimizer = torch.optim.AdamW(model.fc.parameters(), lr=args.lr)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3)
 
 # ============================================================
@@ -97,7 +107,7 @@ trigger_times = 0
 best_model_state = None
 train_losses, val_losses = [], []
 
-for epoch in range(EPOCHS):
+for epoch in range(args.epochs):
     model.train()
     running_loss = 0.0
 
@@ -130,10 +140,9 @@ for epoch in range(EPOCHS):
     val_losses.append(val_loss)
     acc = accuracy_score(y_true, y_pred)
 
-    print(f"Epoch {epoch+1}/{EPOCHS} | Train Loss: {train_loss:.4f} | "
+    print(f"Epoch {epoch+1}/{args.epochs} | Train Loss: {train_loss:.4f} | "
           f"Val Loss: {val_loss:.4f} | Val Acc: {acc:.4f}")
 
-    # LR Scheduler
     scheduler.step(val_loss)
 
     # Early Stopping
