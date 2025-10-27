@@ -21,6 +21,7 @@ LEARNING_RATE = 0.001
 IMAGE_SIZE = (224, 224)
 NUM_CLASSES = 2
 CLASS_NAMES = ["Cat", "Dog"]
+PATIENCE = 5
 
 # ============================================================
 # 推論設定
