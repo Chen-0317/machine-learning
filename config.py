@@ -8,7 +8,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # ============================================================
 # 資料與模型路徑
 
-DATA_DIR = "data/train_grayscale"  # 訓練資料資料夾
+DATA_DIR = "data/train"  # 訓練資料資料夾
 MODEL_PATH = "best_model.pth"      # 訓練後的模型檔案
 MODEL_NAME = "resnet34"
 

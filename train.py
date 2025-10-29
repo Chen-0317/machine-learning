@@ -26,8 +26,8 @@ args = parser.parse_args()
 # ============================================================
 class CatsDogsDataset(Dataset):
     def __init__(self, folder_path, transform=None):
-        self.cat_files = glob.glob(os.path.join(folder_path, 'gray_cat.*.jpg'))
-        self.dog_files = glob.glob(os.path.join(folder_path, 'gray_dog.*.jpg'))
+        self.cat_files = glob.glob(os.path.join(folder_path, 'cat.*.jpg'))
+        self.dog_files = glob.glob(os.path.join(folder_path, 'dog.*.jpg'))
         self.all_files = self.cat_files + self.dog_files
         self.labels = [0] * len(self.cat_files) + [1] * len(self.dog_files)
         self.transform = transform
